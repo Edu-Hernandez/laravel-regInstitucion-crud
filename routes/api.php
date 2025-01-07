@@ -4,36 +4,40 @@ use App\Http\Controllers\api\AuxiliarController;
 use App\Http\Controllers\api\ProfesorController;
 use App\Http\Controllers\api\RepresentativeController;
 use App\Http\Controllers\api\StudentController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DirectorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//students
-Route::apiResource('/students', StudentController::class);
+Route::group([
 
-//profesores
-Route::apiResource('/profesores', ProfesorController::class);
+    // 'middleware' => 'api',
+    'prefix' => 'auth'
 
-//auxiliares
-Route::apiResource('/auxiliars', AuxiliarController::class);
+], function ($router) {
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
+    Route::post('/me', [AuthController::class, 'me'])->name('me');
+    //students
+    Route::apiResource('/students', StudentController::class);
 
-//representantes
-Route::apiResource('/representatives', RepresentativeController::class);
+    //profesores
+    Route::apiResource('/profesores', ProfesorController::class);
 
-//director
-Route::apiResource('/directors', DirectorController::class);
+    //auxiliares
+    Route::apiResource('/auxiliars', AuxiliarController::class);
+
+    //representantes
+    Route::apiResource('/representatives', RepresentativeController::class);
+
+    //director
+    Route::apiResource('/directors', DirectorController::class);
+});
