@@ -17,7 +17,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group([
 
-    // 'middleware' => 'api',
+    'middleware' => 'auth:api', // Protege todas las rutas del grupo con JWT
     'prefix' => 'auth'
 
 ], function ($router) {
